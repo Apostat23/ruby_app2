@@ -17,25 +17,14 @@ class StartController < ApplicationController
       setup_intent.setup_failed setup_intent.succeeded subscription_schedule.canceled subscription_schedule.created 
       subscription_schedule.released subscription_schedule.updated 
     }
-    @event = ''
 
     if request.post?
       @data = request.body.read
-      response = {
-        :status => 'success',
-        :message => 'Post data received',
-        :data => @data,
-        :event => @event,
-      }
+      response = { :status => 200, :data => @data, :event => '' }
     end
 
-    @events.each do |event|
-      if params[:type] == event
-        @event = event
-        puts @event.upcase
-      end
-    end
-
+    @events.each { |event| response[:event] = event if params[:type] == event }
+    puts "#{response[:event].upcase}(#{response[:status]}) - #{response[:data]}"
     render :json => response
   end
 end
